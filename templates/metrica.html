@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Métricas de Personal - Municipalidad La Serena{% endblock %}
+
+{% block contenido %}
+<div class="card shadow border-0 p-4 mb-4">
+    <h2 class="fw-bold text-danger mb-3">Panel de Control y Métricas del Personal</h2>
+    <p class="text-muted">Seguimiento en tiempo real del rendimiento y estado del equipo.</p>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle border">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width: 35%;">Funcionario</th>
+                    <th style="width: 45%;">Avance Diario</th>
+                    <th style="width: 20%;">Estado Semáforo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in personal %}
+                <tr>
+                    <td class="fw-bold">{{ p.funcionario }}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="progress flex-grow-1 me-2" style="height: 22px; background-color: #e9ecef;">
+                                <div class="progress-bar 
+                                    {% if p.estado_semaforo == 'Verde' %} bg-success 
+                                    {% elif p.estado_semaforo == 'Amarillo' %} bg-warning 
+                                    {% else %} bg-danger {% endif %}" 
+                                    role="progressbar" 
+                                    style="width: {{ p.avance_diario }}%;" 
+                                    aria-valuenow="{{ p.avance_diario }}" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="100">
+                                </div>
+                            </div>
+                            <span class="fw-bold text-dark" style="min-width: 45px;">{{ p.avance_diario }}%</span>
+                        </div>
+                    </td>
+                    <td>
+                        {% if p.estado_semaforo == "Verde" %}
+                            <span class="badge bg-success">Verde</span>
+                        {% elif p.estado_semaforo == "Amarillo" %}
+                            <span class="badge bg-warning text-dark">Amarillo</span>
+                        {% else %}
+                            <span class="badge bg-danger">{{ p.estado_semaforo }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Inicio - Solicitudes{% endblock %}
+
+{% block contenido %}
+<div class="row align-items-center card-municipal-rojo p-5 rounded shadow">
+    <div class="col-md-6">
+        <h1 class="fw-bold">Sistema de Solicitudes Municipal</h1>
+        <p class="lead">Módulo para la gestión y seguimiento de peticiones ciudadanas.</p>
+    </div>
+    <div class="col-md-6 text-center">
+        <img src="{% static 'img/trabajadores.png' %}" alt="Trabajadores Municipales" class="img-fluid rounded shadow-sm" style="max-height: 240px; width: 100%; object-fit: cover;">
+    </div>
+</div>
+{% endblock %}

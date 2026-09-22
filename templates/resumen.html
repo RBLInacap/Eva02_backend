@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Resumen de Desempeño - Municipalidad La Serena{% endblock %}
+
+{% block contenido %}
+<!-- Banner Principal -->
+<div class="row align-items-center card-municipal-rojo p-5 rounded shadow mb-4">
+    <div class="col-md-8">
+        <h1 class="fw-bold">Resumen de Desempeño</h1>
+        <p class="lead">Visión consolidada del rendimiento y estadísticas generales del equipo municipal.</p>
+    </div>
+    <div class="col-md-4 text-center">
+        <div class="bg-white text-dark p-3 rounded shadow-sm">
+            <h5 class="fw-bold text-danger mb-1">Estado General</h5>
+            <span class="badge bg-success fs-6">Sistema Operativo</span>
+        </div>
+    </div>
+</div>
+
+<!-- Tarjetas de Métricas Resumen -->
+<div class="row text-center mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm border-0 p-4 bg-light">
+            <h6 class="text-muted fw-bold text-uppercase">Total Funcionarios</h6>
+            <h2 class="fw-bold text-danger display-6 mt-2">{{ total_funcionarios }}</h2>
+            <p class="text-muted small mb-0">Personal registrado en plataforma</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm border-0 p-4 bg-light">
+            <h6 class="text-muted fw-bold text-uppercase">Avance Promedio</h6>
+            <h2 class="fw-bold text-success display-6 mt-2">{{ avance_promedio }}%</h2>
+            <p class="text-muted small mb-0">Rendimiento global del equipo</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm border-0 p-4 bg-light">
+            <h6 class="text-muted fw-bold text-uppercase">Evaluación Global</h6>
+            <h2 class="fw-bold text-warning display-6 mt-2">{{ evaluacion_global }}</h2>
+            <p class="text-muted small mb-0">Indicador de semáforo activo</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

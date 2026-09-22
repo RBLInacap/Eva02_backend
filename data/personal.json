@@ -1,0 +1,12 @@
+[
+{
+    "funcionario": "Alexodro Diaz",
+    "avance_diario": 95,
+    "estado_semaforo": "Verde"
+},
+{
+    "funcionario": "Francisco Caiceo",
+    "avance_diario": 75,
+    "estado_semaforo": "Amarillo"
+}
+]
