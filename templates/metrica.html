@@ -9,11 +9,11 @@
     <p class="text-muted">Seguimiento del avance diario y estado de cada delegado.</p>
 
     <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-3">
-        <button type="button" class="btn btn-danger align-self-sm-start">Agregar</button>
-        <div class="input-group" style="max-width: 360px;">
-            <input type="search" class="form-control" placeholder="Buscar delegado..." aria-label="Buscar delegado">
-            <button type="button" class="btn btn-outline-secondary">Buscar</button>
-        </div>
+        <a href="{% url "admin:monitoreo_delegado_add" %}" class="btn btn-danger align-self-sm-start">Agregar</a>
+        <form method="get" action="{% url "panel_monitoreo" %}" class="input-group" style="max-width: 360px;">
+            <input type="search" name="busqueda" value="{{ busqueda }}" class="form-control" placeholder="Buscar delegado..." aria-label="Buscar delegado">
+            <button type="submit" class="btn btn-outline-secondary">Buscar</button>
+        </form>
     </div>
 
     <div class="table-responsive">
@@ -27,38 +27,38 @@
                 </tr>
             </thead>
             <tbody>
-                {% for p in personal %}
+                {% for delegado in delegados %}
                 <tr>
-                    <td class="fw-bold">{{ p.nombre }}</td>
+                    <td class="fw-bold">{{ delegado.nombre }}</td>
                     <td>
                         <div class="d-flex align-items-center">
                             <div class="progress flex-grow-1 me-2" style="height: 22px; background-color: #e9ecef;">
                                 <div class="progress-bar 
-                                    {% if p.estado_semaforo == 'Verde' %} bg-success 
-                                    {% elif p.estado_semaforo == 'Amarillo' %} bg-warning 
+                                    {% if delegado.estado_semaforo == "Verde" %} bg-success
+                                    {% elif delegado.estado_semaforo == "Amarillo" %} bg-warning
                                     {% else %} bg-danger {% endif %}" 
                                     role="progressbar" 
-                                    style="width: {{ p.avance_diario }}%;" 
-                                    aria-valuenow="{{ p.avance_diario }}" 
+                                    style="width: {{ delegado.avance_diario }}%;"
+                                    aria-valuenow="{{ delegado.avance_diario }}"
                                     aria-valuemin="0" 
                                     aria-valuemax="100">
                                 </div>
                             </div>
-                            <span class="fw-bold text-dark" style="min-width: 45px;">{{ p.avance_diario }}%</span>
+                            <span class="fw-bold text-dark" style="min-width: 45px;">{{ delegado.avance_diario }}%</span>
                         </div>
                     </td>
                     <td>
-                        {% if p.estado_semaforo == "Verde" %}
+                        {% if delegado.estado_semaforo == "Verde" %}
                             <span class="badge bg-success">Verde</span>
-                        {% elif p.estado_semaforo == "Amarillo" %}
+                        {% elif delegado.estado_semaforo == "Amarillo" %}
                             <span class="badge bg-warning text-dark">Amarillo</span>
                         {% else %}
-                            <span class="badge bg-danger">{{ p.estado_semaforo }}</span>
+                            <span class="badge bg-danger">{{ delegado.estado_semaforo }}</span>
                         {% endif %}
                     </td>
                     <td class="text-nowrap">
-                        <button type="button" class="btn btn-sm btn-outline-primary me-1">Modificar</button>
-                        <button type="button" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                        <a href="{% url "admin:monitoreo_delegado_change" delegado.pk %}" class="btn btn-sm btn-outline-primary me-1">Modificar</a>
+                        <a href="{% url "admin:monitoreo_delegado_delete" delegado.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
                     </td>
                 </tr>
                 {% empty %}

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block titulo %}Municipalidad La Serena{% endblock %}</title>
     <!-- Referencia a Bootstrap CSS Local -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
     <style>
         /* Barra de navegación superior con el color #ad0000 y texto blanco */
         .navbar-custom {
@@ -47,8 +47,8 @@
     <!-- Barra de Navegación Roja -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm mb-4 py-2">
         <div class="container">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'inicio_solicitudes' %}">
-                <img src="{% static 'img/logo.png' %}" alt="Logo Muni La Serena">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url "inicio_solicitudes" %}">
+                <img src="{% static "img/logo.png" %}" alt="Logo Municipalidad de La Serena">
                 <!-- Se eliminó el span con el texto "Muni La Serena" -->
             </a>
             
@@ -59,22 +59,25 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="{% url 'inicio_solicitudes' %}">Inicio</a>
+                        <a class="nav-link px-3" href="{% url "inicio_solicitudes" %}">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="{% url 'lista_reportes' %}">Reportes</a>
+                        <a class="nav-link px-3" href="{% url "panel_monitoreo" %}">Organización</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="{% url 'panel_monitoreo' %}">Monitoreo</a>
+                        <a class="nav-link px-3" href="{% url "lista_actividades" %}">Actividades</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="{% url 'resumen_monitoreo' %}">Resumen</a>
+                        <a class="nav-link px-3" href="{% url "lista_evidencias" %}">Evidencias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="{% url "resumen_monitoreo" %}">Resumen</a>
                     </li>
                 </ul>
 
                 <!-- Buscador -->
-                <form action="{% url 'buscar_global' %}" method="GET" class="d-flex ms-lg-3 mt-3 mt-lg-0" role="search">
-                    <input class="form-control form-control-sm me-2" type="search" name="q" placeholder="Buscar trámite..." aria-label="Search" required>
+                <form action="{% url "buscar_global" %}" method="GET" class="d-flex ms-lg-3 mt-3 mt-lg-0" role="search">
+                    <input class="form-control form-control-sm me-2" type="search" name="busqueda" placeholder="Buscar trámite..." aria-label="Buscar trámite" required>
                     <button class="btn btn-outline-light btn-sm" type="submit">Buscar</button>
                 </form>
             </div>
@@ -96,6 +99,6 @@
     </footer>
 
     <!-- Referencia a Bootstrap JS Local -->
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
 </body>
 </html>

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block titulo %}Validación de Evidencias{% endblock %}
+
+{% block contenido %}
+<div class="card shadow border-0 p-4 mb-4">
+    <h2 class="fw-bold text-danger mb-3">Validación de Evidencias</h2>
+    <p class="text-muted">Respaldo y revisión de evidencias asociadas a actividades.</p>
+
+    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-3">
+        <a href="{% url "admin:solicitudes_evidencia_add" %}" class="btn btn-danger align-self-sm-start">Agregar</a>
+        <form method="get" action="{% url "lista_evidencias" %}" class="input-group" style="max-width: 360px;">
+            <input type="search" name="busqueda" value="{{ busqueda }}" class="form-control" placeholder="Buscar evidencia..." aria-label="Buscar evidencia">
+            <button type="submit" class="btn btn-outline-secondary">Buscar</button>
+        </form>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle border">
+            <thead class="table-dark">
+                <tr>
+                    <th>Código Verificador</th>
+                    <th>Actividad Asociada</th>
+                    <th>Estado de la Evidencia</th>
+                    <th>Delegado Verificador</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for evidencia in evidencias %}
+                <tr>
+                    <td class="fw-bold">{{ evidencia.codigo_verificador }}</td>
+                    <td>{{ evidencia.id_actividad.actividad_solicitud }}</td>
+                    <td>
+                        {% if evidencia.estado == "APROBADA" %}
+                            <span class="badge bg-success">Aprobada</span>
+                        {% elif evidencia.estado == "RECHAZADA" %}
+                            <span class="badge bg-danger">Rechazada</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Pendiente</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ evidencia.id_verificador.nombre }} {{ evidencia.id_verificador.apellido }}</td>
+                    <td class="text-nowrap">
+                        <a href="{% url "admin:solicitudes_evidencia_change" evidencia.pk %}" class="btn btn-sm btn-outline-primary me-1">Modificar</a>
+                        <a href="{% url "admin:solicitudes_evidencia_delete" evidencia.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">No hay evidencias registradas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

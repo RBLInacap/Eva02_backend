@@ -1,57 +1,55 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block titulo %}Lista de Reportes{% endblock %}
+{% block titulo %}Gestión Operativa - Actividades{% endblock %}
 
 {% block contenido %}
 <div class="card shadow border-0 p-4 mb-4">
-    <h2 class="fw-bold text-danger mb-3">Listado de Solicitudes Vecinales</h2>
-    <p class="text-muted">Registro actual de peticiones ingresadas al sistema municipal.</p>
+    <h2 class="fw-bold text-danger mb-3">Gestión Operativa</h2>
+    <p class="text-muted">Actividades registradas por el equipo en terreno y sus compromisos.</p>
 
     <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-3">
-        <button type="button" class="btn btn-danger align-self-sm-start">Agregar</button>
-        <div class="input-group" style="max-width: 360px;">
-            <input type="search" class="form-control" placeholder="Buscar reporte..." aria-label="Buscar reporte">
-            <button type="button" class="btn btn-outline-secondary">Buscar</button>
-        </div>
+        <a href="{% url "admin:solicitudes_actividad_add" %}" class="btn btn-danger align-self-sm-start">Agregar</a>
+        <form method="get" action="{% url "lista_actividades" %}" class="input-group" style="max-width: 360px;">
+            <input type="search" name="busqueda" value="{{ busqueda }}" class="form-control" placeholder="Buscar actividad..." aria-label="Buscar actividad">
+            <button type="submit" class="btn btn-outline-secondary">Buscar</button>
+        </form>
     </div>
 
     <div class="table-responsive">
         <table class="table table-striped table-hover align-middle border">
             <thead class="table-dark">
                 <tr>
-                    <th>Código</th>
+                    <th>ID Actividad</th>
                     <th>Fecha</th>
-                    <th>Delegado</th>
-                    <th>Territorio</th>
-                    <th>Gestión</th>
-                    <th>Estado</th>
+                    <th>Funcionario Responsable</th>
+                    <th>Solicitud Atendida</th>
+                    <th>Estado del Compromiso</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                {% for r in reportes %}
+                {% for actividad in actividades %}
                 <tr>
-                    <td class="fw-bold">{{ r.codigo }}</td>
-                    <td>{{ r.fecha|date:"d/m/Y" }}</td>
-                    <td>{{ r.delegado.nombre }}</td>
-                    <td>{{ r.territorio }}</td>
-                    <td>{{ r.tipo_gestion }}</td>
+                    <td class="fw-bold">{{ actividad.id_actividad }}</td>
+                    <td>{{ actividad.fecha_actividad|date:"d/m/Y" }}</td>
+                    <td>{{ actividad.id_funcionario.nombre }} {{ actividad.id_funcionario.apellido }}</td>
+                    <td>{{ actividad.actividad_solicitud }}</td>
                     <td>
-                        {% if r.estado == "Realizado" %}
-                            <span class="badge bg-success">Realizado</span>
+                        {% if actividad.compromiso %}
+                            <span class="badge {% if actividad.compromiso.estado == "REALIZADO" %}bg-success{% elif actividad.compromiso.estado == "PENDIENTE" %}bg-warning text-dark{% else %}bg-info text-dark{% endif %}">{{ actividad.compromiso.estado }}</span>
                         {% else %}
-                            <span class="badge bg-warning text-dark">En Proceso</span>
+                            <span class="badge bg-secondary">Sin compromiso</span>
                         {% endif %}
                     </td>
                     <td class="text-nowrap">
-                        <button type="button" class="btn btn-sm btn-outline-primary me-1">Modificar</button>
-                        <button type="button" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                        <a href="{% url "admin:solicitudes_actividad_change" actividad.pk %}" class="btn btn-sm btn-outline-primary me-1">Modificar</a>
+                        <a href="{% url "admin:solicitudes_actividad_delete" actividad.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="text-center text-muted py-4">No hay reportes registrados.</td>
+                    <td colspan="6" class="text-center text-muted py-4">No hay actividades registradas.</td>
                 </tr>
                 {% endfor %}
             </tbody>

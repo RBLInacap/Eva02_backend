@@ -8,7 +8,7 @@
     <div class="card shadow border-0 p-5 mx-auto bg-light" style="max-width: 600px;">
         
         <div class="mb-3">
-            <img src="{% static 'img/error.gif' %}" alt="Teto Triste" class="img-fluid rounded" style="max-height: 140px;">
+            <img src="{% static "img/error.gif" %}" alt="Ilustración de error" class="img-fluid rounded" style="max-height: 140px;">
         </div>
 
         <h1 class="display-1 fw-bold text-danger">404</h1>
@@ -20,7 +20,7 @@
         </div>
 
         <div class="mt-4">
-            <a href="{% url 'inicio_solicitudes' %}" class="btn btn-danger px-4 py-2 fw-bold">Volver al inicio ahora</a>
+            <a href="{% url "inicio_solicitudes" %}" class="btn btn-danger px-4 py-2 fw-bold">Volver al inicio ahora</a>
         </div>
     </div>
 </div>
@@ -35,7 +35,7 @@
         
         if (segundos <= 0) {
             clearInterval(timer);
-            window.location.href = "{% url 'inicio_solicitudes' %}";
+            window.location.href = "{% url "inicio_solicitudes" %}";
         }
     }, 1000);
 </script>
