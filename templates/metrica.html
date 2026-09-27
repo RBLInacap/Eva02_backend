@@ -1,26 +1,35 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block titulo %}Métricas de Personal - Municipalidad La Serena{% endblock %}
+{% block titulo %}Métricas de Delegados - Municipalidad La Serena{% endblock %}
 
 {% block contenido %}
 <div class="card shadow border-0 p-4 mb-4">
-    <h2 class="fw-bold text-danger mb-3">Panel de Control y Métricas del Personal</h2>
-    <p class="text-muted">Seguimiento en tiempo real del rendimiento y estado del equipo.</p>
+    <h2 class="fw-bold text-danger mb-3">Panel de Control y Métricas de Delegados</h2>
+    <p class="text-muted">Seguimiento del avance diario y estado de cada delegado.</p>
+
+    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-3">
+        <button type="button" class="btn btn-danger align-self-sm-start">Agregar</button>
+        <div class="input-group" style="max-width: 360px;">
+            <input type="search" class="form-control" placeholder="Buscar delegado..." aria-label="Buscar delegado">
+            <button type="button" class="btn btn-outline-secondary">Buscar</button>
+        </div>
+    </div>
 
     <div class="table-responsive">
         <table class="table table-striped table-hover align-middle border">
             <thead class="table-dark">
                 <tr>
-                    <th style="width: 35%;">Funcionario</th>
-                    <th style="width: 45%;">Avance Diario</th>
-                    <th style="width: 20%;">Estado Semáforo</th>
+                    <th>Delegado</th>
+                    <th>Avance Diario</th>
+                    <th>Estado Semáforo</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for p in personal %}
                 <tr>
-                    <td class="fw-bold">{{ p.funcionario }}</td>
+                    <td class="fw-bold">{{ p.nombre }}</td>
                     <td>
                         <div class="d-flex align-items-center">
                             <div class="progress flex-grow-1 me-2" style="height: 22px; background-color: #e9ecef;">
@@ -47,6 +56,14 @@
                             <span class="badge bg-danger">{{ p.estado_semaforo }}</span>
                         {% endif %}
                     </td>
+                    <td class="text-nowrap">
+                        <button type="button" class="btn btn-sm btn-outline-primary me-1">Modificar</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-4">No hay delegados registrados.</td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -1,16 +1,10 @@
-import json
-import os
-from django.conf import settings
 from django.shortcuts import render, redirect
-from django.http import Http404
+
+from .models import Reporte
+
 
 def lista_reportes(request):
-    # Ruta al archivo reportes.json
-    ruta_json = os.path.join(settings.BASE_DIR, "data", "reportes.json")
-    
-    with open(ruta_json, "r", encoding="utf-8") as f:
-        reportes = json.load(f)
-        
+    reportes = Reporte.objects.select_related("delegado").all()
     return render(request, "reportes.html", {"reportes": reportes})
 
 def inicio_solicitudes(request):

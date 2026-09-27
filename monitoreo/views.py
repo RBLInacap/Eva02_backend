@@ -1,42 +1,32 @@
-import json
-import os
-
-from django.conf import settings
+from django.db.models import Avg
 from django.shortcuts import render
 
-
-def _leer_personal():
-    ruta_json = os.path.join(settings.BASE_DIR, 'data', 'personal.json')
-    with open(ruta_json, 'r', encoding='utf-8') as f:
-        return json.load(f)
+from .models import Delegado
 
 
 def panel_monitoreo(request):
-    personal = _leer_personal()
+    personal = Delegado.objects.all()
     return render(request, 'metrica.html', {'personal': personal})
 
 
 def resumen_monitoreo(request):
-    personal = _leer_personal()
+    personal = Delegado.objects.all()
+    total_delegados = personal.count()
+    promedio = personal.aggregate(promedio=Avg('avance_diario'))['promedio']
+    avance_promedio = round(promedio) if promedio is not None else 0
 
-    total_funcionarios = len(personal)
-    avances = [item.get('avance_diario', 0) for item in personal]
-    avance_promedio = round(sum(avances) / total_funcionarios) if total_funcionarios else 0
-
-    if total_funcionarios == 0:
+    if total_delegados == 0:
         evaluacion_global = 'Sin datos'
+    elif personal.filter(estado_semaforo__iexact='rojo').exists():
+        evaluacion_global = 'Rojo'
+    elif personal.filter(estado_semaforo__iexact='amarillo').exists() or avance_promedio < 80:
+        evaluacion_global = 'Amarillo'
     else:
-        semaforos = [item.get('estado_semaforo', '').lower() for item in personal]
-        if any(semaforo == 'rojo' for semaforo in semaforos):
-            evaluacion_global = 'Rojo'
-        elif any(semaforo == 'amarillo' for semaforo in semaforos) or avance_promedio < 80:
-            evaluacion_global = 'Amarillo'
-        else:
-            evaluacion_global = 'Verde'
+        evaluacion_global = 'Verde'
 
     contexto = {
         'personal': personal,
-        'total_funcionarios': total_funcionarios,
+        'total_delegados': total_delegados,
         'avance_promedio': avance_promedio,
         'evaluacion_global': evaluacion_global,
     }
