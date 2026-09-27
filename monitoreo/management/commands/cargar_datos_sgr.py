@@ -3,9 +3,19 @@ from decimal import Decimal
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.utils import timezone
 
 from monitoreo.models import Delegacion, Funcionario, Rol
-from solicitudes.models import Actividad, Compromiso, Evidencia, Solicitante
+from solicitudes.models import (
+	Actividad,
+	Compromiso,
+	Evidencia,
+	Indicador,
+	Meta,
+	Periodo,
+	Solicitante,
+	Solicitante_Actividad,
+)
 
 
 class Command(BaseCommand):
@@ -74,12 +84,14 @@ class Command(BaseCommand):
 			("María Rojas", "JJVV San Bartolomé", "+56911223344"),
 			("Pedro Alarcón", "Club Adulto Mayor Renacer (La Pampa)", "+56955667788"),
 		)
+		solicitantes = {}
 		for nombre_contacto, organizacion, telefono in solicitantes_iniciales:
-			Solicitante.objects.get_or_create(
+			solicitante, _ = Solicitante.objects.get_or_create(
 				nombre_contacto=nombre_contacto,
 				organizacion=organizacion,
 				telefono=telefono,
 			)
+			solicitantes[nombre_contacto] = solicitante
 
 		actividad_luminaria, _ = Actividad.objects.get_or_create(
 			id_funcionario=funcionarios["fcaiceo"],
@@ -131,10 +143,44 @@ class Command(BaseCommand):
 			},
 		)
 
+		Solicitante_Actividad.objects.get_or_create(
+			id_solicitante=solicitantes["María Rojas"],
+			id_actividad=actividad_luminaria,
+			defaults={
+				"rol_participacion": "Solicitante principal",
+				"es_principal": True,
+			},
+		)
+
+		periodo, _ = Periodo.objects.get_or_create(
+			nombre="Trimestre 3 - 2026",
+			defaults={
+				"fecha_inicio": date(2026, 7, 1),
+				"fecha_termino": date(2026, 9, 30),
+			},
+		)
+		meta, _ = Meta.objects.get_or_create(
+			id_periodo=periodo,
+			cargo="Operativos de Inspección Territorial",
+			defaults={
+				"valor_objetivo": 10,
+				"ponderador": Decimal("50.0"),
+			},
+		)
+		Indicador.objects.get_or_create(
+			id_meta=meta,
+			fecha_calculo=timezone.localdate(),
+			defaults={
+				"avance_aprobado": 8,
+				"cumplimiento": Decimal("80.00"),
+				"semaforo": Indicador.Semaforo.VERDE,
+			},
+		)
+
 		self.stdout.write(
 			self.style.SUCCESS(
 				"Datos SGR cargados o ya existentes: 4 roles, 4 delegaciones, "
-				"3 funcionarios, 2 solicitantes, 2 actividades, 2 compromisos "
-				"y 1 evidencia."
+				"3 funcionarios, 2 solicitantes, 2 actividades, 2 compromisos, "
+				"1 evidencia, 1 participación, 1 período, 1 meta y 1 indicador."
 			)
 		)

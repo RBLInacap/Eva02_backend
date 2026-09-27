@@ -61,22 +61,42 @@ class AdministradorSolicitante(admin.ModelAdmin):
 @admin.register(Solicitante_Actividad)
 class AdministradorParticipacion(admin.ModelAdmin):
 	list_display = ("id_solicitante", "id_actividad", "rol_participacion", "es_principal")
-	search_fields = ("rol_participacion",)
+	search_fields = (
+		"rol_participacion",
+		"id_solicitante__nombre_contacto",
+		"id_solicitante__organizacion",
+		"id_actividad__codigo",
+		"id_actividad__actividad_solicitud",
+	)
+	list_filter = ("rol_participacion", "es_principal", "id_actividad")
 
 
 @admin.register(Periodo)
 class AdministradorPeriodo(admin.ModelAdmin):
-	list_display = ("id_periodo",)
+	list_display = ("id_periodo", "nombre", "fecha_inicio", "fecha_termino")
+	search_fields = ("nombre", "=id_periodo")
+	list_filter = ("fecha_inicio", "fecha_termino")
 
 
 @admin.register(Meta)
 class AdministradorMeta(admin.ModelAdmin):
-	list_display = ("id_meta", "id_periodo")
+	list_display = ("id_meta", "cargo", "id_periodo", "valor_objetivo", "ponderador")
+	search_fields = ("cargo", "=id_meta", "id_periodo__nombre")
+	list_filter = ("id_periodo",)
 
 
 @admin.register(Indicador)
 class AdministradorIndicador(admin.ModelAdmin):
-	list_display = ("id_indicador", "id_meta")
+	list_display = (
+		"id_indicador",
+		"id_meta",
+		"fecha_calculo",
+		"avance_aprobado",
+		"cumplimiento",
+		"semaforo",
+	)
+	search_fields = ("=id_indicador", "id_meta__cargo")
+	list_filter = ("fecha_calculo", "semaforo", "id_meta")
 
 
 @admin.register(Reporte)

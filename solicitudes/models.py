@@ -178,13 +178,27 @@ class Compromiso(models.Model):
 
 class Periodo(models.Model):
 	id_periodo = models.BigAutoField(primary_key=True)
+	nombre = models.CharField(max_length=100, unique=True)
+	fecha_inicio = models.DateField()
+	fecha_termino = models.DateField()
+
+	class Meta:
+		constraints = [
+			models.CheckConstraint(
+				condition=models.Q(fecha_termino__gte=models.F("fecha_inicio")),
+				name="periodo_fechas_validas",
+			)
+		]
 
 	def __str__(self):
-		return f"Periodo {self.id_periodo}"
+		return self.nombre
 
 
 class Meta(models.Model):
 	id_meta = models.BigAutoField(primary_key=True)
+	cargo = models.CharField(max_length=150)
+	valor_objetivo = models.PositiveSmallIntegerField()
+	ponderador = models.DecimalField(max_digits=5, decimal_places=2)
 	id_periodo = models.ForeignKey(
 		Periodo,
 		on_delete=models.RESTRICT,
@@ -192,12 +206,29 @@ class Meta(models.Model):
 		related_name="metas",
 	)
 
+	class Meta:
+		constraints = [
+			models.UniqueConstraint(
+				fields=("id_periodo", "cargo"),
+				name="meta_unica_por_periodo_y_cargo",
+			)
+		]
+
 	def __str__(self):
-		return f"Meta {self.id_meta}"
+		return self.cargo
 
 
 class Indicador(models.Model):
+	class Semaforo(models.TextChoices):
+		VERDE = "Verde", "Verde"
+		AMARILLO = "Amarillo", "Amarillo"
+		ROJO = "Rojo", "Rojo"
+
 	id_indicador = models.BigAutoField(primary_key=True)
+	fecha_calculo = models.DateField()
+	avance_aprobado = models.PositiveSmallIntegerField()
+	cumplimiento = models.DecimalField(max_digits=5, decimal_places=2)
+	semaforo = models.CharField(max_length=8, choices=Semaforo.choices)
 	id_meta = models.ForeignKey(
 		Meta,
 		on_delete=models.CASCADE,
@@ -205,8 +236,20 @@ class Indicador(models.Model):
 		related_name="indicadores",
 	)
 
+	class Meta:
+		constraints = [
+			models.UniqueConstraint(
+				fields=("id_meta", "fecha_calculo"),
+				name="indicador_unico_por_meta_y_fecha",
+			),
+			models.CheckConstraint(
+				condition=models.Q(semaforo__in=("Verde", "Amarillo", "Rojo")),
+				name="indicador_semaforo_valido",
+			),
+		]
+
 	def __str__(self):
-		return f"Indicador {self.id_indicador}"
+		return f"{self.id_meta.cargo}: {self.fecha_calculo:%d/%m/%Y}"
 
 
 class Reporte(models.Model):
