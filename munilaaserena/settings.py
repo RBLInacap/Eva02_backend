@@ -11,11 +11,12 @@ load_dotenv(BASE_DIR / ".env")
 
 
 # La clave secreta se configura en el archivo local de entorno.
-SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-key-for-local-testing-only")
 
-DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() in {"true", "1", "yes"}
+DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in {"true", "1", "yes"}
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS if host.strip()]
 
 
 # Aplicaciones instaladas.
@@ -61,22 +62,31 @@ TEMPLATES = [
 WSGI_APPLICATION = "munilaaserena.wsgi.application"
 
 
-# Conexión a MySQL desde variables de entorno.
+# Conexión a base de datos. Para desarrollo local se usa SQLite por defecto.
+# En producción/AWS se puede configurar MySQL mediante variables de entorno.
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv("DB_NAME", "muni_laserena"),
-        "USER": os.getenv("DB_USER", "root"),
-        "PASSWORD": os.getenv("DB_PASSWORD", ""),
-        "HOST": os.getenv("DB_HOST", "127.0.0.1"),
-        "PORT": os.getenv("DB_PORT", "3306"),
-        "OPTIONS": {
-            "charset": "utf8mb4",
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+if os.getenv("DB_ENGINE") == "mysql" or os.getenv("DB_NAME") and os.getenv("DB_USER"):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": os.getenv("DB_NAME", "muni_laserena"),
+            "USER": os.getenv("DB_USER", "root"),
+            "PASSWORD": os.getenv("DB_PASSWORD", ""),
+            "HOST": os.getenv("DB_HOST", "127.0.0.1"),
+            "PORT": os.getenv("DB_PORT", "3306"),
+            "OPTIONS": {
+                "charset": "utf8mb4",
+                "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Validación de contraseñas de usuarios.
@@ -113,13 +123,16 @@ USE_TZ = True
 
 # Archivos estáticos.
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 # En desarrollo, los correos se imprimen en la consola.
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
